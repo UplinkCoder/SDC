@@ -19,8 +19,9 @@ auto buildConf() {
 	
 	// SDC's folder.
 	import std.file;
+	import std.algorithm;
 	import std.array;
-	auto path = thisExePath.split('/');
+	auto path = thisExePath.splitter('/').array;
 	path[$ - 1] = "sdc.conf";
 	
 	conf.extends(getConf(path.join("/")));
