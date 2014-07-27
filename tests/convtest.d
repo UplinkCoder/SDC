@@ -58,11 +58,11 @@ void main () {
 	            t.retval = parse!int(val); 
 	            break;
 	        case "dependency":
-		    auto df = File(val,"r");
-		    string dep;
-		    foreach(l;df.byLine) {
-			dep~=to!string(l)~"\n";
-		    }
+				auto df = File(val,"r");
+				string dep;
+				foreach(l;df.byLine) {
+					dep~=to!string(l)~"\n";
+				}
 	            t.deps ~= dep;
 	            break;
 	        case "has-passed":

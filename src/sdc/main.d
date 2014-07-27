@@ -45,6 +45,7 @@ int main(string[] args) {
 	auto files = args[1 .. $];
 	
 	auto executable = "a.out";
+	if (files[0]=="-") 
 	auto objFile = files[0][0 .. $-2] ~ ".o";
 	if(outputFile.length) {
 		if(dontLink) {

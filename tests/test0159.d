@@ -1,7 +1,7 @@
 //T compiles:yes
 //T has-passed:yes
 //T retval:25
-// template typed alias parameter (value)
+//? desc:template typed alias parameter (value)
 
 auto foo(alias T U, T)() {
 	return U + T.sizeof;

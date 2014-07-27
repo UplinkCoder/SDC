@@ -1,7 +1,7 @@
-DMD ?= dmd
+GDC ?= gdc
 GCC ?= gcc
 ARCHFLAG ?= 
-DFLAGS = $(ARCHFLAG) -w -debug -gc -unittest
+DFLAGS = $(ARCHFLAG) -w -O0  -unittest
 # DFLAGS = $(ARCHFLAG) -w -O -release
 
 LLVM_CONFIG ?= llvm-config
@@ -13,7 +13,7 @@ ifdef LD_PATH
 	LDFLAGS += $(addprefix -L, $(LD_PATH))
 endif
 
-LDFLAGS += -lphobos2 $(LIBD_LIB) $(LLVM_LIB)
+LDFLAGS += -lgphobos2 $(LIBD_LIB) $(LLVM_LIB)
 
 PLATFORM = $(shell uname -s)
 ifeq ($(PLATFORM),Linux)
@@ -43,7 +43,7 @@ $(SDC): obj/sdc.o $(LIBD) $(LIBD_LLVM)
 
 obj/sdc.o: $(SOURCE)
 	@mkdir -p lib obj
-	$(DMD) -c -ofobj/sdc.o $(SOURCE) $(DFLAGS) $(IMPORTS)
+	$(GDC) -c -o obj/sdc.o $(SOURCE) $(DFLAGS) $(IMPORTS)
 
 bin/sdc.conf:
 	echo "{\n\t\"includePath\": [\"$(PWD)/libs\", \".\"],\n\t\"libPath\": [\"$(PWD)/lib\"],\n}" > $@
