@@ -2,8 +2,14 @@
 module std.stdio;
 
 
-void writeln(string s)
-{
-    printf(s);
-    printf("\n");
+	
+void writeln(string s) {
+	if (s.ptr[s.length] != '\0') {
+		assert(0,"NO NULL TERMINATION! you are crazy!");
+	}
+	printf("%s\n".ptr,s.ptr);
+}
+
+void writeln(int i) {
+	printf("%d\n".ptr,i);
 }
