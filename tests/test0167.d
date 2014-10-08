@@ -19,7 +19,7 @@ int main() {
 		}
 	}
 */
-	int res=0;
+	size_t res=0;
 
 	arr[0] = cast(ubyte)12;
 	arr[1] = cast(ubyte)24;
@@ -34,11 +34,18 @@ int main() {
 		res+=i*2;
 		res+=(n/12)*2;
 	}
-	
+
+	uint ran = 22;
+
+	bool _true = true;
+	bool _false = false; 
+	ran = ran?22:0;
 //	SimpleInputRange sir;
 //	foreach(e;sir) {
 //		writeln(e);
 //	}
 
-	return(res);
+
+
+	return(cast(int)res);
 }

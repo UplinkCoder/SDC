@@ -6,6 +6,8 @@ module sdc.sdc;
 import d.ir.symbol;
 
 import d.llvm.backend;
+import d.llvm.codegen;
+import d.llvm.evaluator;
 
 import d.semantic.semantic;
 
@@ -20,7 +22,8 @@ import std.file;
 
 final class SDC {
 	Context context;
-	
+
+	CodeGenPass codegen;
 	SemanticPass semantic;
 	LLVMBackend backend;
 	
@@ -28,13 +31,14 @@ final class SDC {
 	
 	Module[] modules;
 	
-	this(string name, JSON conf, uint optLevel) {
+	this(string name, JSON conf, uint optLevel,string[] versions) {
 		includePath = conf["includePath"].array.map!(path => cast(string) path).array();
 		
 		context = new Context();
-		
-		backend	= new LLVMBackend(context, name, optLevel, conf["libPath"].array.map!(path => " -L" ~ (cast(string) path)).join());
-		semantic = new SemanticPass(context, backend.getEvaluator(), &getFileSource);
+		versions ~= ["SDC"]; 
+	
+		semantic = new SemanticPass(context, &getFileSource,versions);
+		backend	= new LLVMBackend(context, name, optLevel, conf["libPath"].array.map!(path => " -L" ~ (cast(string) path)).join(), semantic);
 		
 		// Review thet way this whole thing is built.
 		backend.getPass().object = semantic.object;
