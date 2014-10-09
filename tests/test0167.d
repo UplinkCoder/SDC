@@ -39,7 +39,7 @@ int main() {
 
 	bool _true = true;
 	bool _false = false; 
-	ran = ran?22:0;
+//	ran = ran?22:0;
 //	SimpleInputRange sir;
 //	foreach(e;sir) {
 //		writeln(e);
