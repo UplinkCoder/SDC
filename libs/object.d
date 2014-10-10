@@ -22,7 +22,9 @@ class Object {
 	this() {}
 }
 
-class TypeInfo {}
+class TypeInfo {
+//	uint refcount;
+}
 class ClassInfo : TypeInfo {
 	ClassInfo base;
 }

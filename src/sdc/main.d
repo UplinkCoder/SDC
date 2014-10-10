@@ -68,6 +68,7 @@ int main(string[] args) {
 
 	auto files = args[1 .. $];
 	
+	
 	auto executable = files[0].idup.baseName(".d");
 	auto objFile = executable~".o";
 	if(outputFile.length) {
@@ -78,7 +79,9 @@ int main(string[] args) {
 		}
 	}
 	
-	auto sdc = new SDC(files[0], conf, optLevel,versions);
+	auto sdc = new SDC(files[0], conf, optLevel, versions);
+	import std.stdio;
+	writeln(files);
 	try {
 		foreach(file; files) {
 			sdc.compile(file);
