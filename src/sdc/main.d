@@ -67,7 +67,7 @@ int main(string[] args) {
 	}
 
 	auto files = args[1 .. $];
-	
+	//auto files = ["tests/t.d"];
 	
 	auto executable = files[0].idup.baseName(".d");
 	auto objFile = executable~".o";

@@ -10,6 +10,10 @@ void writeln(string s) {
 	printf("%s\n".ptr,s.ptr);
 }
 
+void writeln (char c) {
+	printf("%c\n".ptr,c);
+}
+
 void writeln(int i) {
 	printf("%d\n".ptr,i);
 }
