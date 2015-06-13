@@ -1,3 +1,5 @@
+void main() {}
+
 struct CType {
 	CTypeEnum Ttype;
 
@@ -258,11 +260,12 @@ string print(CType ct) {
 string print(CFunction cf) {
 	string stringRep = print(cf.returnType) ~" "~ cf.name ~ "(";
 
-	foreach(param;cf.params[0 .. $-1]) {
+	foreach(param;cf.params) {
 		stringRep ~= print(param) ~ ", ";
 	}
 
-	stringRep ~= print(cf.params[$-1]) ~ ") ";
+	stringRep = stringRep[0 .. $-2];
+
 	if (cf._body.Stype == CStatementEnum.cblockstatement) {
 		stringRep ~= print(cf._body);
 	} else {
