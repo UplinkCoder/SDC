@@ -264,7 +264,7 @@ string print(CFunction cf) {
 		stringRep ~= print(param) ~ ", ";
 	}
 
-	stringRep = stringRep[0 .. $-2];
+	stringRep = cf.params ? stringRep : stringRep[0 .. $-2];
 
 	if (cf._body.Stype == CStatementEnum.cblockstatement) {
 		stringRep ~= print(cf._body);
