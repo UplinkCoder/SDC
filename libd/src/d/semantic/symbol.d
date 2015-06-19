@@ -762,9 +762,29 @@ struct SymbolAnalyzer {
 
 		i.mangle = "I" ~ manglePrefix;
 
-		assert(d.members.length == 0, "Member support not implemented for interfaces yet");
+		//assert(d.members.length == 0, "Member support not implemented for interfaces yet");
 		assert(d.bases.length == 0, "Interface inheritance not implemented yet");
+		auto members = DeclarationVisitor(pass, AggregateType.Interface).flatten(d.members, i);
 
+		foreach(m; members) {
+			/*if(auto method = cast(Method) m) {
+				auto mt = method.type;
+				auto rt = mt.returnType;
+				// TODO: need to check for final/static
+				if(method.fbody) 
+					assert(0, "non static or non final method can't have body");
+			} else {
+				assert(0, "Interface can have only methods");
+			}*/
+
+			if(!cast(Method) m){
+				assert(0);
+			}
+		}
+
+
+
+		i.members ~= members;
 		// TODO: lots of stuff to add
 
 		i.step = Step.Processed;
