@@ -23,7 +23,6 @@ enum AggregateType {
 	Union,
 	Struct,
 	Class,
-	Interface,
 }
 
 enum AddContext {
@@ -46,7 +45,7 @@ struct DeclarationVisitor {
 			Linkage, "linkage", 3,
 			Visibility, "visibility", 3,
 			Storage, "storage", 2,
-			AggregateType, "aggregateType", 3,
+			AggregateType, "aggregateType", 2,
 			AddContext, "addContext", 1,
 			CtUnitLevel, "ctLevel", 2,
 			bool, "isRef", 1,
@@ -54,7 +53,7 @@ struct DeclarationVisitor {
 			bool, "isAbstract", 1,
 			bool, "isProperty", 1,
 			bool, "isNoGC", 1,
-			uint, "", 13,
+			uint, "", 14,
 		));
 	}
 	

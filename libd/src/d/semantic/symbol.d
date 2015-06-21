@@ -755,7 +755,6 @@ struct SymbolAnalyzer {
 		}
 
 		thisType = Type.get(i).getParamType(false, true);
-
 		import std.conv;
 		auto name = i.name.toString(context);
 		manglePrefix = manglePrefix ~ to!string(name.length);
@@ -764,22 +763,26 @@ struct SymbolAnalyzer {
 
 		//assert(d.members.length == 0, "Member support not implemented for interfaces yet");
 		assert(d.bases.length == 0, "Interface inheritance not implemented yet");
-		auto members = DeclarationVisitor(pass, AggregateType.Interface).flatten(d.members, i);
+		auto members = DeclarationVisitor(pass, AggregateType.Class).flatten(d.members, i);
 
 		foreach(m; members) {
-			/*if(auto method = cast(Method) m) {
+			if(auto method = cast(Method) m) {
+				scheduler.require(method, Step.Signed);
 				auto mt = method.type;
-				auto rt = mt.returnType;
+
+				//auto rt = mt.returnType;
 				// TODO: need to check for final/static
+				import std.stdio;
+				writeln("sid: m");
+				writeln(mt);
+				if(mt.isFinal)
+					assert(0);
 				if(method.fbody) 
 					assert(0, "non static or non final method can't have body");
 			} else {
 				assert(0, "Interface can have only methods");
-			}*/
-
-			if(!cast(Method) m){
-				assert(0);
 			}
+
 		}
 
 
