@@ -766,20 +766,16 @@ struct SymbolAnalyzer {
 		auto members = DeclarationVisitor(pass, AggregateType.Class).flatten(d.members, i);
 
 		foreach(m; members) {
-			if(auto method = cast(Method) m) {
+			if (auto method = cast (Method) m) { // check for (non-static) method
 				scheduler.require(method, Step.Signed);
-				auto mt = method.type;
-
-				//auto rt = mt.returnType;
-				// TODO: need to check for final/static
-				import std.stdio;
-				writeln("sid: m");
-				writeln(mt);
-				if(mt.isFinal)
-					assert(0);
+			
 				if(method.fbody) 
-					assert(0, "non static or non final method can't have body");
-			} else {
+					assert(0, "non-static or non-final method can't have a body in interface");
+
+			} else if(auto staticMethod = cast(Function) m) { // check for static method
+				scheduler.require(staticMethod, Step.Signed);
+			
+			} else { // not a method
 				assert(0, "Interface can have only methods");
 			}
 
