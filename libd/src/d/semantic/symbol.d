@@ -754,7 +754,7 @@ struct SymbolAnalyzer {
 			methodIndex = oldMethodIndex;
 		}
 
-		thisType = Type.get(i).getParamType(false, true);
+		thisType = Type.get(i).getParamType(false, true); // TODO: Object
 		import std.conv;
 		auto name = i.name.toString(context);
 		manglePrefix = manglePrefix ~ to!string(name.length);
