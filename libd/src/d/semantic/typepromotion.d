@@ -13,6 +13,9 @@ import d.exception;
 alias Interface = d.ir.symbol.Interface;
 
 Type getPromotedType(SemanticPass pass, Location location, Type t1, Type t2) {
+	if (t1 == t2) {
+		return t1;
+	}
 	return TypePromoter(pass, location, t1).visit(t2);
 }
 
