@@ -132,6 +132,9 @@ enum Prefill = [
 	"allMembers", "identifier", "getOverloads",
 	// Generated
 	"init", "length", "max", "min", "ptr", "sizeof", "alignof",
+	// Operators
+	"opAssign", "opBinary", "opCall", "opCast", "opCmp",
+	"opEquals", "opUnary",
 	// Scope
 	"exit", "success", "failure",
 	// Main
