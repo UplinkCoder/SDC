@@ -535,30 +535,19 @@ public:
 				
 			case ExactCompare :
 				auto against = tv.visit(e.against).getCanonical;
-				result = tested.unqual == against.unqual;
+				result = tested == against;
 				break;
 
 			case ConvertCompare :
 				auto against = tv.visit(e.against).getCanonical;
-				tested = tested.unqual;
-				against = against.unqual;
-
-				if (against.kind == TypeKind.Builtin && 
-					tested.kind == TypeKind.Builtin) {
-					auto at = against.builtin;
-					auto tt = tested.builtin;
-					//FIXME I am quite sure this will break;
-					result = at >= tt;
-				} else {
-					//FIXME resolve alias this for tested!
-					auto tp = TypePromoter(pass, e.location, tested);
-					result = tp.visit(against) == against;
-				}
+				auto flavor = implicitCastFrom(pass, tested, against);
+				result = flavor != CastKind.Invalid;
 				break;
 
 			case Qualifier :
 				result = e.qualifier == tested.qualifier;
 				break;
+
 			case Kind :
 				result = e.typeKind == tested.kind;
 				break;
