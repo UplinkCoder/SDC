@@ -251,6 +251,8 @@ struct Caster(bool isExplicit, alias bailoutOverride = null) {
 		}
 		
 		final switch(t) with(BuiltinType) {
+			case SizeT :
+				return castFrom(Type.get(currentSizeT), to);
 			case None :
 			case Void :
 				return CastKind.Invalid;

@@ -1072,7 +1072,7 @@ public:
 		index = buildImplicitCast(
 			pass,
 			location,
-			pass.object.getSizeT().type,
+			pass.getSizeT().type,
 			index,
 		);
 		

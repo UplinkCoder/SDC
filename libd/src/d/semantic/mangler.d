@@ -90,6 +90,9 @@ struct TypeMangler {
 			case Ucent :
 				// Used for idouble, that won't be implemented.
 				return "p";
+
+			case SizeT :
+				assert(0, "SizeT should be resolved at this point");
 			
 			case Float :
 				return "f";

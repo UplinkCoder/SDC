@@ -52,7 +52,13 @@ struct TypePromoter {
 		}
 		
 		if (t.kind == TypeKind.Builtin) {
-			return Type.get(promoteBuiltin(bt, t.builtin));
+			auto bt1 = t.builtin;
+			if (bt == BuiltinType.SizeT) {
+				bt = pass.currentSizeT;
+			} else if (bt1 == BuiltinType.SizeT) {
+				bt1 = pass.currentSizeT;
+			}
+			return Type.get(promoteBuiltin(bt, bt1));
 		}
 		
 		import std.conv;
@@ -193,7 +199,7 @@ BuiltinType getBuiltinBase(BuiltinType t) {
 BuiltinType promoteBuiltin(BuiltinType t1, BuiltinType t2) {
 	t1 = getBuiltinBase(t1);
 	t2 = getBuiltinBase(t2);
-	
+
 	if (isIntegral(t1) && isIntegral(t2)) {
 		import std.algorithm;
 		return max(t1, t2, BuiltinType.Int);

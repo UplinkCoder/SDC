@@ -61,7 +61,9 @@ final class SemanticPass {
 	
 	import d.object;
 	ObjectReference object;
-	
+
+	BuiltinType currentSizeT;
+
 	Name[] versions = getDefaultVersions();
 	
 	alias EvaluatorBuilder = Evaluator delegate(Scheduler, ObjectReference);
@@ -86,8 +88,15 @@ final class SemanticPass {
 		dataLayout = dlBuilder(this.object);
 		
 		scheduler.require(obj, Step.Populated);
+
+		currentSizeT = getUnsingendIntegralWithSize(dataLayoutPointerSize*8);
 	}
-	
+
+	auto getSizeT() {
+		import d.context.location;
+		return new TypeAlias(Location.init, BuiltinName!"size_t", Type.get(currentSizeT));
+	}
+
 	Module add(string filename) {
 		return moduleVisitor.add(filename);
 	}
@@ -111,7 +120,11 @@ final class SemanticPass {
 	auto importModule(Name[] pkgs) {
 		return moduleVisitor.importModule(pkgs);
 	}
-	
+
+	uint dataLayoutPointerSize() {
+		return dataLayout.getSize(Type.get(BuiltinType.SizeT));
+	}
+
 	Function buildMain(Module[] mods) {
 		import std.algorithm, std.array;
 		auto candidates = mods.map!(m => m.members).joiner.map!((s) {

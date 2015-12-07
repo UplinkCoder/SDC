@@ -81,7 +81,7 @@ struct TypeVisitor {
 		auto s = evalIntegral(buildImplicitCast(
 			pass,
 			size.location,
-			pass.object.getSizeT().type,
+			pass.getSizeT().type,
 			size,
 		));
 		

@@ -427,7 +427,7 @@ private:
 		}
 		
 		if (t.hasPointerABI()) {
-			return getBuiltin(pass.object.getSizeT().type);
+			return getBuiltin(pass.getSizeT().type);
 		}
 		
 		assert(t.kind == TypeKind.Builtin);

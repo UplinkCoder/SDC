@@ -21,7 +21,8 @@ struct SizeofVisitor {
 	}
 	
 	uint visit(BuiltinType t) {
-		return (t == BuiltinType.Null)
+		return (t == BuiltinType.Null
+			|| t == BuiltinType.SizeT)
 			? getPointerSize()
 			: getSize(t);
 	}
@@ -92,7 +93,7 @@ struct SizeofVisitor {
 	}
 	
 	private uint getPointerSize() {
-		return visit(pass.object.getSizeT().type);
+		return pass.dataLayoutPointerSize();
 	}
 }
 

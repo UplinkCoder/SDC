@@ -371,7 +371,7 @@ struct IdentifierResolver(bool asAlias) {
 		auto size = pass.evalIntegral(buildImplicitCast(
 			pass,
 			index.location,
-			pass.object.getSizeT().type,
+			pass.getSizeT().type,
 			index,
 		));
 		
@@ -873,7 +873,7 @@ struct TypeDotIdentifierResolver {
 			return Identifiable(new IntegerLiteral(
 				location,
 				SizeofVisitor(pass).visit(t),
-				pass.object.getSizeT().type.builtin,
+				pass.getSizeT().type.builtin,
 			));
 		}
 		
@@ -926,7 +926,7 @@ struct TypeDotIdentifierResolver {
 			auto s = new Field(
 				location,
 				0,
-				pass.object.getSizeT().type,
+				pass.getSizeT().type,
 				BuiltinName!"length",
 				null,
 			);
@@ -959,7 +959,7 @@ struct TypeDotIdentifierResolver {
 		return Identifiable(new IntegerLiteral(
 			location,
 			size,
-			pass.object.getSizeT().type.builtin,
+			pass.getSizeT().type.builtin,
 		));
 	}
 	
