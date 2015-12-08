@@ -858,6 +858,7 @@ AstExpression parsePowExpression(ref TokenRange trange, AstExpression expr) {
  * Parse __traits
  */
 private AstExpression parseTraitsExpression(R)(ref R trange) {
+	import d.parser.dtemplate;
 	Location location = trange.front.location;
 
 	trange.match(TokenType.__Traits);
@@ -865,21 +866,30 @@ private AstExpression parseTraitsExpression(R)(ref R trange) {
 	
 	import d.context.name;
 
-	Name[] args;
+	TraitsParameter[] args;
 	auto trait = trange.parseIdentifier().name;
 
-	import d.parser.dtemplate:parseTemplateArguments;
+	/+if (trait == BuiltinName!"compiles") {
+		//Very Special Handling Required :)
+	}+/
 
 	while(trange.front.type == TokenType.Comma) {
 		trange.match(TokenType.Comma);
+		TraitsParameter p;
+		p.location = trange.front.location;
+
 		switch (trange.front.type) with (TokenType) {
-			case StringLiteral, IntegerLiteral  : 
-				args ~= trange.front.name;
-				trange.match(trange.front.type);
-				break;
+			case StringLiteral :
+				p.type = TraitsParameterType.String;
+				goto setName;
 
 			case Identifier :
-				args ~= trange.parseIdentifier().name;
+				p.type = TraitsParameterType.Identifier;
+			setName :
+				p.name = trange.front.name;
+				p.location.spanTo(trange.front.location);
+				args ~= p;
+				trange.match(trange.front.type);
 				break;
 
 			default :
