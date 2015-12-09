@@ -1370,7 +1370,7 @@ public:
 
 import d.context.name;
 import d.ast.identifier;
-private Symbol resolveSymbolIdentifer(Location location, Identifier name) { 
+private Symbol resolveSymbolIdentifer(Location location, Identifier id) { 
 	import d.semantic.identifier;
 	
 //	auto id = new BasicIdentifier(location, name);
@@ -1383,7 +1383,7 @@ private Symbol resolveSymbolIdentifer(Location location, Identifier name) {
 			} else static if (is(typeof(identified) : Expression)) {
 				auto varExpr = cast(VariableExpression) identified;
 				if  (varExpr) return varExpr.var;
-				assert(0, typeid(identified).toString() ~ "is has no Identifier");
+				assert(0, typeid(identified).toString() ~ "is no Identifier");
 			} else static if (is(typeof(identified) : Type)) {
 				auto agg = cast (Aggregate) identified.aggregate;
 				if (agg) return agg;
@@ -1457,5 +1457,22 @@ public :
 			default : assert(0, "__traits( "~ e.trait.toString(pass.context) ~
 					", ... ) is not supported");
 		}
+	}
+
+	import d.ast.conditional;
+
+	Expression visit(Mixin!AstExpression e) {
+		import d.lexer, d.parser.base, d.parser.expression;
+		import d.semantic.evaluator;
+
+		auto str =  evalString(visit(e.value));
+		auto pos = pass.context.registerMixin(e.location, str ~ "\0");
+		auto trange = lex(pos, pass.context);
+		import std.stdio;
+
+		trange.match(TokenType.Begin);
+		auto astExpr = trange.parseExpression();
+	
+		return visit(astExpr); 
 	}
 }
