@@ -380,7 +380,7 @@ public:
 				case  Add, Sub,	Mul, Div, Mod, Pow :
 					return OverloadInfo(BuiltinName!"opBinary", true);
 				default : 
-					debug { if (lhs.type.isAggregate()) import std.stdio; writeln("Unhandled Op", op); }
+					debug { if (lhs.type.isAggregate()) { import std.stdio; writeln("Unhandled Op", op); } }
 					return OverloadInfo (BuiltinName!"", false);
 			}
 		}
@@ -403,17 +403,13 @@ public:
 				if (oInfo.isTemplate) {
 					call = callOverloadSet(e.location, os, [lhs, rhs]);
 				} else {
-					///XXX this should really be handeld by CallOverloadset
+					///XXX this should really be handeld by CallOverloadSet
 					import std.algorithm:map,filter;
 
 					auto filterd = os.set
 						.map!(s => cast(Function)s)
 						.filter!(f => f && f.params[0].type == lhs.type &&
-								f.params[1].type.unqual == rhs.type.unqual
-								&& canConvert(
-									rhs.type.qualifier,
-									f.params[1].type.qualifier
-								)
+								implicitCastFrom(pass, rhs.type, f.params[1].type) != CastKind.Invalid
 						);
 
 					foreach(f;filterd) {
@@ -447,13 +443,6 @@ public:
 			if (call) return call;  
 		}
 			
-
-//		if (e.op != AstBinaryOp.Identical &&  e.op != AstBinaryOp.NotIdentical && e.op != AstBinaryOp.Concat) 
-//		assert(isIcmpable(lhs) && isIcmpable(rhs),
-//			to!string(lhs.type.kind) ~ " " ~ to!string (e.op)~ " " ~ to!string(rhs.type.kind));
-//		//auto call = callOpEquals(lhs, rhs);
-
-
 		return buildBinary(e.location, e.op, lhs, rhs);
 	}
 	
