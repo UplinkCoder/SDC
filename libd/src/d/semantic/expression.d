@@ -664,15 +664,12 @@ public:
 
 			case ConvertCompare :
 				auto against = tv.visit(e.against).getCanonical;
-				against = against.unqual;
-				tested = tested.unqual;
+				against = against;
+				tested = tested;
 
-				Expression dummyExpr = new SuperExpression(e.location);
-				dummyExpr.type = tested;
+				auto flavor = implicitCastFrom(pass, tested, against);
 
-				dummyExpr = buildImplicitCast(pass, e.location, against, dummyExpr);
-
-				result = dummyExpr.type.kind != TypeKind.Error;
+				result = flavor != CastKind.Invalid;
 				break;
 
 			case Qualifier :
