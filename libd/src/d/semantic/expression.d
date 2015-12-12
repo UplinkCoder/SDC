@@ -458,7 +458,7 @@ public:
 		auto rhs = visit(e.rhs);
 		
 		import d.semantic.typepromotion;
-		auto t = getPromotedType(pass, e.location, lhs.type, rhs.type);
+		auto t = getCommonType(pass, e.location, lhs.type, rhs.type);
 		
 		lhs = buildExplicitCast(pass, lhs.location, t, lhs);
 		rhs = buildExplicitCast(pass, rhs.location, t, rhs);
