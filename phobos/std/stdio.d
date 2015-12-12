@@ -12,8 +12,11 @@ void writeln(T)(T s) {
 	//	writeln(str);
 	} else static if (is(T:int)) {
 		printf("%d", s);
+	} else {
+		auto str = __traits(identifier, T);
+		printf("%.*s\n".ptr, str.length, str.ptr);
 	}
-
+	
 	return ;
 }
 /+
