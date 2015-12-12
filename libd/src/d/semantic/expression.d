@@ -982,9 +982,13 @@ public:
 
 		if (func) {
 			return handleCall(location, build!FunctionExpression(func.location, func), args);
-		} else if (templ.length > 0) {
+		} else if (templs.length > 0) {
 			import d.semantic.dtemplate;
-			return TemplateInstancier(pass).instanciate(location, os, [], args);
+			auto ti = TemplateInstancier(pass).instanciate(location, s, [], args);
+			scheduler.require(ti);
+			auto f = cast(Function) ti.resolve(location, s.name);
+			if (f) return handleCall(location, build!FunctionExpression(f.location, f), args);
+			return getError(f, location, "This Template was no good");  
 		} else {
 			return getError(s, location, "Overload cannot be found" 
 				~ s.name.toString(pass.context));
