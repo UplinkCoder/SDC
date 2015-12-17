@@ -1550,8 +1550,8 @@ import d.ast.identifier;
 private Symbol resolveSymbolIdentifer(Identifier id) { 
 	import d.semantic.identifier;
 	
-	return SymbolResolver(pass)
-		.visit(id)
+	return IdentifierResolver(pass)
+		.resolve(id)
 		.apply!(delegate Symbol(identified) {
 			static if(is(typeof(identified) : Symbol)) {
 				return identified;
