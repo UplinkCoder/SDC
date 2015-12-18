@@ -1079,6 +1079,8 @@ struct SymbolAnalyzer {
 			}
 		}
 		
+		t.constraint = d.constraint;
+		
 		t.step = Step.Signed;
 		
 		// TODO: support multiple IFTI.
@@ -1160,7 +1162,8 @@ struct SymbolAnalyzer {
 				i.storage = Storage.Local;
 			}
 			
-			i.addSymbol(m);
+			// TemplateInstances get Populated in the TemplateInstanciator now
+			if (i.resolve(m.location, m.name) is null) i.addSymbol(m);
 		}
 		
 		import d.semantic.declaration;

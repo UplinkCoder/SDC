@@ -1,44 +1,26 @@
-//T retval:0
 //T compiles:yes
 //T has-passed:yes
+//T retval:13
+// Tests IFTI overloads with constraints
 
-const char ch;
-class c {}
 
-class d : c {}
-
-void func() {}
-
-char[] ca;
-struct S {
-    bool b;
-    alias b this;
+auto handle(int v)() if (v == 1) {
+	return 6;	
 }
 
-bool m = is(typeof(ch) : dchar); // maybe this should be false ?
-				 // converting from one UTF encoding 
-				 // to another is non-trivial work
-bool[11] ts;
-bool _false = is(c : void);
-bool _false2 = is(void* : char*);
-void main() {
-    ts[0] = is(typeof(ch) == const);
-    ts[1] = is(typeof(func) == function);
-    ts[2] = is(typeof(ch) == char); //maybe this should not pass
-    ts[3] = is(c == class);
-    ts[4] = is(d : c);
-    ts[5] = !is(c : d);
-    ts[6] = !is(typeof(c) : char);
-    ts[7] = is(S == struct);
-    ts[8] = is(S : bool);
-    ts[9] = is(int : uint);
-    ts[10] = is(char* : void*);
+auto handle(int v)() if (v != 3 && v != 1) {
+	return 2;
+}
 
-    foreach (i; 0 .. 11) {
-        assert(ts[i]);
-    }
+auto handle(int v)() if (v == 3) {
+	return 3;
+}
 
-    assert(!_false);
-    assert(!_false2);
 
+int main() {
+	return 
+		handle!1() + // 6
+		handle!2() + // 8
+		handle!3() + // 11
+		handle!4();  // 13	
 }

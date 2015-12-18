@@ -588,7 +588,7 @@ struct IdentifierPostProcessor(bool asAlias) {
 		scheduler.require(a, Step.Signed);
 		return visit(a.value);
 	}
-	
+
 	Identifiable visit(SymbolAlias s) {
 		scheduler.require(s, Step.Signed);
 		return visit(s.symbol);

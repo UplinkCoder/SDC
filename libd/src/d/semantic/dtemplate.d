@@ -159,6 +159,26 @@ private:
 				return false;
 			}
 		}
+				
+		if(t.constraint) {
+			
+			auto oldScope = currentScope;
+			scope(exit) {currentScope = oldScope;}
+			
+			auto ti = instanciateFromResolvedArgs(t.location, t, matchedArgs, true);
+			currentScope = ti;
+
+			import d.semantic.expression;
+			import d.semantic.caster;
+			auto retval = evalIntegral(buildExplicitCast(
+				pass, 
+				t.constraint.location,
+				Type.get(BuiltinType.Bool),
+				ExpressionVisitor(pass).visit(t.constraint),
+			));
+
+			return cast(bool) retval;
+		}
 		
 		return true;
 	}
@@ -203,6 +223,7 @@ private:
 		Location location,
 		Template t,
 		TemplateArgument[] args,
+		bool asTest = false,
 	) in {
 		assert(t.parameters.length == args.length);
 	} body {
@@ -267,7 +288,16 @@ private:
 			i.storage = t.storage;
 			
 			pass.scheduler.schedule(t, i);
-			return t.instances[id] = i;
+
+			foreach(s;argSyms) {
+				if (i.resolve(s.location, s.name) is null) { i.addSymbol(s); }
+			}
+
+			if (!asTest) {
+				return t.instances[id] = i;
+			} else {
+				return i;
+			}
 		}());
 	}
 }

@@ -76,6 +76,10 @@ final class SDC {
 	void compile(string filename) {
 		modules ~= semantic.add(filename);
 	}
+
+	void outputASTSQLite() {
+		auto sast = serializeAST(modules[0]);
+	}
 	
 	void buildMain() {
 		semantic.terminate();
