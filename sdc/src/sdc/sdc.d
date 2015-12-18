@@ -77,10 +77,6 @@ final class SDC {
 		modules ~= semantic.add(filename);
 	}
 
-	void outputASTSQLite() {
-		auto sast = serializeAST(modules[0]);
-	}
-	
 	void buildMain() {
 		semantic.terminate();
 		backend.visit(semantic.buildMain(modules));
