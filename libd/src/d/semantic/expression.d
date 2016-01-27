@@ -380,46 +380,13 @@ public:
 			auto agg = lhs.type.aggregate;
 			
 			import d.semantic.identifier;
-			// this is taken straight form findCtor
-			// which is pretty similar to the newExpressionVisitor
-			// XXX Deduplicate!!!
-			call = IdentifierResolver(pass)
-				.resolveIn(location, agg, oInfo.name)
-					.apply!(delegate Expression(i) {
-							alias T = typeof(i);
-							static if (is(T : Symbol)) {
-								if (auto f = cast(Function) i) {
-									return getFrom(location, lhs, f);
-								}
-								
-								if (auto s = cast(OverloadSet) i) {
-									// FIXME: overload resolution doesn't do alias this
-									// or vrp trunc, so we need a workaround here.
-									if (s.set.length == 1) {
-										if (auto f = cast(Function) s.set[0]) {
-											return getFrom(location, lhs, f);
-										}
-									}
-									
-									import std.algorithm, std.array;
-									return chooseOverload(
-										location,
-										s.set.map!(delegate Expression(s) {
-												if (auto f = cast(Function) s) {
-													return getFrom(location, lhs, f);
-												}
+			call = callInAggregate(location, lhs.location, lhs, oInfo.name, [rhs]);
 
-												assert(0, "Not what we expected");
-											}).array(),
-										[rhs],
-										);
-								}
-							}
-							return null;
-						})
-					();
+			if (call.type.kind == TypeKind.Error) {
+				return null;
+			}
 			
-			if (e.op == AstBinaryOp.NotEqual && call) {
+			if (e.op == AstBinaryOp.NotEqual) {
 				call = build!UnaryExpression(
 					e.location,
 					Type.get(BuiltinType.Bool),
@@ -794,6 +761,64 @@ public:
 			args,
 		);
 	}
+	import d.context.name;
+	
+	private Expression callInAggregate(
+		Location location,
+		Location calleeLoc,
+		Expression aggInstance,
+		Name funcName,
+		Expression[] args,
+	) in {
+		assert(
+			aggInstance.type.isAggregate(),
+			aggInstance.toString(context) ~ " is not an aggregate"
+		);
+	} body {
+		Aggregate agg = aggInstance.type.aggregate;
+		
+		import d.semantic.identifier;
+		return IdentifierResolver(pass)
+			.resolveIn(location, agg, funcName)
+			.apply!(delegate Expression(i) {
+				alias T = typeof(i);
+				static if (is(T : Symbol)) {
+					if (auto f = cast(Function) i) {
+						return getFrom(calleeLoc, aggInstance, f);
+					}
+					
+					if (auto s = cast(OverloadSet) i) {
+						// FIXME: overload resolution doesn't do alias this
+						// or vrp trunc, so we need a workaround here.
+						if (s.set.length == 1) {
+							if (auto f = cast(Function) s.set[0]) {
+								return getFrom(calleeLoc, aggInstance, f);
+							}
+						}
+						
+						import std.algorithm, std.array;
+						return chooseOverload(
+							location,
+							s.set.map!(delegate Expression(s) {
+								if (auto f = cast(Function) s) {
+									return getFrom(calleeLoc, aggInstance, f);
+								}
+								
+								assert(0, "Not a Function");
+							}).array(),
+							args,
+						);
+					}
+				}
+				
+				return getError(
+					i,
+					location,
+					agg.name.toString(pass.context) ~ " isn't callable",
+				);
+			})();
+	}
+		
 	
 	// XXX: factorize with NewExpression
 	private Expression findCtor(
@@ -807,49 +832,7 @@ public:
 			thisExpr.toString(context) ~ " is not an aggregate"
 		);
 	} body {
-		auto agg = thisExpr.type.aggregate;
-		
-		import d.context.name, d.semantic.identifier;
-		return IdentifierResolver(pass)
-			.resolveIn(location, agg, BuiltinName!"__ctor")
-			.apply!(delegate Expression(i) {
-				alias T = typeof(i);
-				static if (is(T : Symbol)) {
-					if (auto f = cast(Function) i) {
-						return getFrom(calleeLoc, thisExpr, f);
-					}
-					
-					if (auto s = cast(OverloadSet) i) {
-						// FIXME: overload resolution doesn't do alias this
-						// or vrp trunc, so we need a workaround here.
-						if (s.set.length == 1) {
-							if (auto f = cast(Function) s.set[0]) {
-								return getFrom(calleeLoc, thisExpr, f);
-							}
-						}
-						
-						import std.algorithm, std.array;
-						return chooseOverload(
-							location,
-							s.set.map!(delegate Expression(s) {
-								if (auto f = cast(Function) s) {
-									return getFrom(calleeLoc, thisExpr, f);
-								}
-								
-								// XXX: Template ??!?!!?
-								assert(0, "Not a constructor");
-							}).array(),
-							args,
-						);
-					}
-				}
-				
-				return getError(
-					i,
-					location,
-					agg.name.toString(pass.context) ~ " isn't callable",
-				);
-			})();
+		return callInAggregate(location, calleeLoc, thisExpr, BuiltinName!"__ctor", args);
 	}
 	
 	private Expression handleIFTI(
