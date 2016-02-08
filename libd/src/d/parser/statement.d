@@ -414,25 +414,23 @@ AstStatement parseStatement(ref TokenRange trange) {
 
 			trange.match(TokenType.CloseParen);
 
-			AstStatement stmt;
-
 			if (trange.front.type == TokenType.Semicolon) {
 				location.spanTo(trange.front.location);
 				trange.popFront();
 
-				stmt = new d.ast.conditional.Mixin!AstStatement(location, expr);
-			} else {
-				location.spanTo(trange.previous);
-
-				auto prev = new d.ast.conditional.Mixin!AstExpression(location, expr);
-
-				stmt = new AstExpressionStatement(
-					trange.parseAssignExpression(prev)
-				);
-
-				trange.match(TokenType.Semicolon);
+				return new d.ast.conditional.Mixin!AstStatement(location, expr);
 			}
 
+			location.spanTo(trange.previous);
+			auto prev = new d.ast.conditional.Mixin!AstExpression(location, expr);
+
+			AstStatement stmt;
+			stmt = new AstExpressionStatement(
+				trange.parseAssignExpression(prev)
+			);
+
+			trange.match(TokenType.Semicolon);
+			
 			return stmt;
 		
 		case Static :
