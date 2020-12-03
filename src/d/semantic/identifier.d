@@ -885,6 +885,11 @@ struct TypeDotIdentifierResolver {
 	}
 	
 	Identifiable visit(Type t) {
+		if (name == BuiltinName!"stringof")
+		{
+			return Identifiable(new StringLiteral(location, t.getCanonical().toString(context)));
+		}
+
 		return t.accept(this);
 	}
 	
