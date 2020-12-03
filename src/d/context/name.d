@@ -127,7 +127,7 @@ enum Prefill = [
 	// Version
 	"SDC", "D_LP64", "X86_64", "linux", "OSX", "FreeBSD", "Posix",
 	// Generated
-	"init", "length", "max", "min", "ptr", "sizeof", "alignof",
+	"init", "length", "max", "min", "ptr", "sizeof", "alignof", "stringof",
 	// Scope
 	"exit", "success", "failure",
 	// Main
