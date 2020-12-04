@@ -11,6 +11,7 @@ import d.parser.conditional;
 import d.parser.declaration;
 import d.parser.expression;
 import d.parser.type;
+import d.parser.dpragma;
 
 Statement parseStatement(ref TokenRange trange) {
 	Location location = trange.front.location;
@@ -445,7 +446,10 @@ Statement parseStatement(ref TokenRange trange) {
 		
 		case Debug:
 			return trange.parseDebug!Statement();
-		
+
+		case Pragma:
+			return trange.parsePragma!Statement();
+
 		default:
 			return trange.parseAmbiguousStatement();
 	}

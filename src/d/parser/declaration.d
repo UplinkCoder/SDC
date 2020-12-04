@@ -6,6 +6,7 @@ import d.parser.conditional;
 import d.parser.expression;
 import d.parser.identifier;
 import d.parser.statement;
+import d.parser.dpragma;
 import d.parser.dtemplate;
 import d.parser.type;
 
@@ -75,6 +76,9 @@ Declaration parseDeclaration(ref TokenRange trange) {
 		
 		case Mixin:
 			return trange.parseMixin!Declaration();
+
+		case Pragma:
+			return trange.parsePragma!Declaration();
 		
 		default :
 			break;

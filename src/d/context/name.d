@@ -161,6 +161,8 @@ enum Prefill = [
 	// Intrinsics
 	"3sdc10intrinsics", "expect", "cas", "casWeak", "popCount",
 	"countLeadingZeros", "countTrailingZeros", "bswap",
+    // Pragmas
+    "msg",
 ];
 
 auto getNames() {
