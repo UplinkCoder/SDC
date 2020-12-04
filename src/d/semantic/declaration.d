@@ -4,10 +4,13 @@ import d.semantic.semantic;
 
 import d.ast.conditional;
 import d.ast.declaration;
+import d.ast.dpragma;
 
 import d.ir.dscope;
 import d.ir.symbol;
 import d.ir.type;
+
+import d.semantic.dpragma;
 
 alias Module = d.ir.symbol.Module;
 
@@ -634,6 +637,10 @@ struct DeclarationVisitor {
 		
 		ctUnits ~= unit;
 		ctUnits ~= CtUnit();
+	}
+
+	void visit(Pragma!Declaration d) {
+		handlePragma(d, pass);
 	}
 	
 private:

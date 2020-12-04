@@ -4,6 +4,7 @@ import d.semantic.semantic;
 
 import d.ast.conditional;
 import d.ast.expression;
+import d.ast.dpragma;
 import d.ast.statement;
 
 import d.context.location;
@@ -14,6 +15,8 @@ import d.ir.expression;
 import d.ir.instruction;
 import d.ir.symbol;
 import d.ir.type;
+
+import d.semantic.dpragma;
 
 struct StatementVisitor {
 private:
@@ -1185,6 +1188,10 @@ public:
 			import d.parser.statement;
 			visit(trange.parseStatement());
 		}
+	}
+
+	void visit(Pragma!Statement s) {
+		handlePragma(s, pass);
 	}
 	
 	void destroy(Variable v) {
